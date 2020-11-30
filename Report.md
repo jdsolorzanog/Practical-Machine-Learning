@@ -48,10 +48,72 @@ It is time to start with the predictions. The methods of classification trees, r
 <em> controlTr <- trainControl(method = "cv",number = 5) </em>
 
 <br>
-<strong> Classification trees </strong>
+<strong> Classification trees </strong> <br>
 
 <em>
-CT <- train(classe~.,data=TrainPartition,method="rpart",trControl=controlTr) <br>
-fancyRpartPlot(CT$finalModel) <br>
+CT <- train(classe~.,data=TrainPartition,method="rpart",trControl=controlTr)<br>
+fancyRpartPlot(CT$finalModel)<br>
+</em>
+<br>
+
+![Classification tree](arbol.png)<br>
+
+<em>
+predictionCT <- predict(CT, newdata=TestPartition) <br>
+confMatCT <- confusionMatrix(TestPartition$classe,predictionCT) <br>
+confMatCT$table <br>
 </em>
 
+![Confusion matrix](ConfMatCT.PNG)<br>
+
+<em>confMatCT$overall[1] </em><br>
+
+![Accuracy](AccCT.PNG)<br>
+
+Very low accuracy was obtained with this method, so it is not recommended for prediction <br>
+
+ <br>
+<strong> Random forests </strong> <br>
+
+<em>
+RF <- train(classe~., data=TrainPartition, method="rf", trControl=controlTr, verbose=FALSE) <br>
+predictionRF <- predict(RF,newdata=TestPartition) <br>
+confMatRF <- confusionMatrix(TestPartition$classe,predictionRF) <br>
+confMatRF$table <br>
+</em>
+ <br>
+
+![Confusion matrix](ConfMatRF.PNG)<br>
+
+<em> confMatRF$overall[1] </em>
+
+![Accuracy](AccRF.PNG)<br>
+
+In contrast, this method gives a very high accuracy, very close to 1, which means that it will allow accurate predictions <br>
+
+If we graphically analyze the precision of the model according to the number of predictors, the following is observed <br>
+
+<em> plot(RF) </em> <br>
+
+![Graphic](PlotRF.PNG)<br>
+
+Although the maximum precision is accuracy with 27 predictors, from 2 it is obtained almost as high accuracy <br>
+
+ <br>
+<strong> Gradient Boosting Method </strong> <br>
+
+<em>
+GBM <- train(classe~., data=TrainPartition, method="gbm", trControl=controlTr, verbose=FALSE) <br>
+predictionGBM <- predict(GBM,newdata=TestPartition) <br>
+confMatGBM <- confusionMatrix(TestPartition$classe,predictionGBM)<br>
+confMatGBM$table <br>
+</em>
+ <br>
+ 
+![Confusion matrix](ConfMatGBM.PNG)<br>
+
+<em> confMatGBM$overall[1] </em>
+
+![Accuracy](AccGBM.PNG)<br>
+
+Although with this method a high accuracy is also obtained, it can be concluded that the optimal method for prediction is random forests, using 27 predictors, which will give a margin of error of less than 1%
